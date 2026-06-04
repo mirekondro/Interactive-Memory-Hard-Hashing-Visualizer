@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { VisualizerMatrix } from './components/VisualizerMatrix';
 import { Dashboard } from './components/Dashboard';
 import { useArgonEngine } from './hooks/useArgonEngine';
+import { ArgonMode } from './types';
 import type { SimulationConfig } from './types';
 
 const INITIAL_CONFIG: SimulationConfig = {
@@ -11,6 +12,7 @@ const INITIAL_CONFIG: SimulationConfig = {
   parallelism: 4,
   timeCost: 3,
   playbackSpeed: 100,
+  mode: ArgonMode.ARGON2ID,
 };
 
 function App() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { SimulationConfig, SimulationState } from '../types';
-import { SimulationStatus } from '../types';
+import { SimulationStatus, ArgonMode } from '../types';
 import { CrackingSimulator } from './CrackingSimulator';
 
 interface DashboardProps {
@@ -14,10 +14,10 @@ interface DashboardProps {
 }
 
 const PRESETS = {
-  OWASP_MIN: { memoryCost: 19, timeCost: 2, parallelism: 1 },
-  OWASP_HIGH: { memoryCost: 64, timeCost: 3, parallelism: 4 },
-  RFC_9106: { memoryCost: 128, timeCost: 1, parallelism: 4 },
-  WEAK: { memoryCost: 2, timeCost: 1, parallelism: 1 },
+  OWASP_MIN: { memoryCost: 19, timeCost: 2, parallelism: 1, mode: ArgonMode.ARGON2ID },
+  OWASP_HIGH: { memoryCost: 64, timeCost: 3, parallelism: 4, mode: ArgonMode.ARGON2ID },
+  RFC_9106: { memoryCost: 128, timeCost: 1, parallelism: 4, mode: ArgonMode.ARGON2ID },
+  WEAK: { memoryCost: 2, timeCost: 1, parallelism: 1, mode: ArgonMode.ARGON2D },
 };
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -29,7 +29,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   step,
   reset
 }) => {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setConfig((prev) => ({
       ...prev,
@@ -48,7 +48,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   };
 
   const isRunning = simState.status === SimulationStatus.RUNNING;
-  const isBelowStandard = config.memoryCost < 19 || config.timeCost < 2;
+  const isBelowStandard = config.memoryCost < 19 || config.timeCost < 2 || config.mode !== ArgonMode.ARGON2ID;
 
   // Determine current preset selection based on exact config match
   let currentPreset = 'CUSTOM';
@@ -56,7 +56,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
     if (
       preset.memoryCost === config.memoryCost &&
       preset.timeCost === config.timeCost &&
-      preset.parallelism === config.parallelism
+      preset.parallelism === config.parallelism &&
+      preset.mode === config.mode
     ) {
       currentPreset = key;
       break;
@@ -92,6 +93,25 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onChange={handleInputChange}
               className="w-full bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
             />
+          </div>
+          
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Algorithmic Mode</label>
+            <select
+              name="mode"
+              value={config.mode}
+              onChange={handleInputChange}
+              className="w-full bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer"
+            >
+              <option value={ArgonMode.ARGON2I}>Argon2i (Data-Independent)</option>
+              <option value={ArgonMode.ARGON2D}>Argon2d (Data-Dependent)</option>
+              <option value={ArgonMode.ARGON2ID}>Argon2id (Hybrid - Recommended)</option>
+            </select>
+            <div className="mt-2 text-[11px] text-gray-500 leading-tight">
+              {config.mode === ArgonMode.ARGON2I && 'Prevents timing side-channel attacks by using a structured, predictable geometric sequence for memory lookups.'}
+              {config.mode === ArgonMode.ARGON2D && 'Maximizes resistance to GPU cracking by using purely chaotic memory lookups based on previous data.'}
+              {config.mode === ArgonMode.ARGON2ID && 'Combines both: Pass 1 uses Argon2i logic to prevent side-channels, subsequent passes use Argon2d logic for GPU resistance.'}
+            </div>
           </div>
         </div>
 

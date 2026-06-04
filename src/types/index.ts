@@ -5,6 +5,12 @@ export enum CellState {
   COMPLETED = 'COMPLETED'
 }
 
+export enum ArgonMode {
+  ARGON2I = 'ARGON2I',
+  ARGON2D = 'ARGON2D',
+  ARGON2ID = 'ARGON2ID',
+}
+
 export interface MatrixCell {
   lane: number;
   col: number;
@@ -23,6 +29,7 @@ export interface SimulationConfig {
   parallelism: number;
   timeCost: number;
   playbackSpeed: number;
+  mode: ArgonMode;
 }
 
 export enum SimulationStatus {

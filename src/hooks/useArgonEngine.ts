@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { 
   SimulationStatus, 
-  CellState 
+  CellState,
+  ArgonMode
 } from '../types';
 import type {
   MatrixCell, 
@@ -58,22 +59,46 @@ export const useArgonEngine = (config: SimulationConfig) => {
       const { currentPass, currentLane, currentCol } = prevSim;
       
       // 1. Calculate Reference Block Coordinates
-      // For Argon2id, it's a mix of data-independent (Argon2i) for early passes
-      // and data-dependent (Argon2d) for later. We simulate a pseudo-random pick here.
-      const pseudoRandomSeed = currentPass * 10000 + currentLane * 100 + currentCol;
-      let refLane = (pseudoRandomSeed * 17) % config.parallelism;
+      let refLane = 0;
       let refCol = 0;
 
-      if (currentPass === 0) {
-        // Can only read from previously computed columns in the current pass
-        refCol = pseudoRandomSeed % Math.max(1, currentCol);
-      } else {
-        // Can read from anywhere in memory
-        refCol = pseudoRandomSeed % config.memoryCost;
-        // Avoid self-reference
-        if (refCol === currentCol && refLane === currentLane) {
-          refCol = (refCol + 1) % config.memoryCost;
+      // Determine the active mode for this specific block
+      // Argon2id uses Argon2i for the first half of the first pass, then Argon2d
+      let activeMode = config.mode;
+      if (config.mode === ArgonMode.ARGON2ID) {
+        const isFirstHalf = currentPass === 0 && currentCol < config.memoryCost / 2;
+        activeMode = isFirstHalf ? ArgonMode.ARGON2I : ArgonMode.ARGON2D;
+      }
+
+      if (activeMode === ArgonMode.ARGON2I) {
+        // Data-Independent (Argon2i): highly structured, predictable mathematical sequence
+        // We simulate a geometric pattern here based purely on loop indexes
+        refLane = (currentPass + currentLane + 1) % config.parallelism;
+        
+        if (currentPass === 0) {
+          // Predictable read from earlier in the same pass (e.g. geometric step back)
+          const stepBack = Math.max(1, Math.floor(currentCol / 3));
+          refCol = (currentCol - stepBack) % Math.max(1, currentCol);
+        } else {
+          // Predictable read from anywhere in memory based on geometric sequence
+          refCol = (currentCol * 2 + currentPass * 3) % config.memoryCost;
         }
+      } else {
+        // Data-Dependent (Argon2d): purely chaotic, depends on data contents 
+        // Simulated here with a chaotic pseudo-random seed
+        const pseudoRandomSeed = currentPass * 10000 + currentLane * 100 + currentCol * 13 + 7;
+        refLane = (pseudoRandomSeed * 17) % config.parallelism;
+        
+        if (currentPass === 0) {
+          refCol = pseudoRandomSeed % Math.max(1, currentCol);
+        } else {
+          refCol = pseudoRandomSeed % config.memoryCost;
+        }
+      }
+
+      // Avoid self-reference
+      if (refCol === currentCol && refLane === currentLane) {
+        refCol = (refCol + 1) % (currentPass === 0 ? Math.max(1, currentCol) : config.memoryCost);
       }
 
       // 2. Compute Next State Coordinates
