@@ -13,6 +13,13 @@ interface DashboardProps {
   reset: () => void;
 }
 
+const PRESETS = {
+  OWASP_MIN: { memoryCost: 19, timeCost: 2, parallelism: 1 },
+  OWASP_HIGH: { memoryCost: 64, timeCost: 3, parallelism: 4 },
+  RFC_9106: { memoryCost: 128, timeCost: 1, parallelism: 4 },
+  WEAK: { memoryCost: 2, timeCost: 1, parallelism: 1 },
+};
+
 export const Dashboard: React.FC<DashboardProps> = ({
   config,
   setConfig,
@@ -30,7 +37,31 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }));
   };
 
+  const handlePresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const presetKey = e.target.value as keyof typeof PRESETS;
+    if (PRESETS[presetKey]) {
+      setConfig((prev) => ({
+        ...prev,
+        ...PRESETS[presetKey],
+      }));
+    }
+  };
+
   const isRunning = simState.status === SimulationStatus.RUNNING;
+  const isBelowStandard = config.memoryCost < 19 || config.timeCost < 2;
+
+  // Determine current preset selection based on exact config match
+  let currentPreset = 'CUSTOM';
+  for (const [key, preset] of Object.entries(PRESETS)) {
+    if (
+      preset.memoryCost === config.memoryCost &&
+      preset.timeCost === config.timeCost &&
+      preset.parallelism === config.parallelism
+    ) {
+      currentPreset = key;
+      break;
+    }
+  }
 
   return (
     <aside className="w-full lg:w-[380px] flex-shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
@@ -66,8 +97,34 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         <hr className="border-gray-800" />
 
-        {/* Sliders */}
+        {/* Presets and Sliders */}
         <div className="space-y-5">
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Industry Presets</label>
+            <select
+              value={currentPreset}
+              onChange={handlePresetChange}
+              className="w-full bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer"
+            >
+              <option value="CUSTOM">Custom Configuration</option>
+              <option value="OWASP_MIN">OWASP Minimum Recommendation</option>
+              <option value="OWASP_HIGH">OWASP High Security</option>
+              <option value="RFC_9106">RFC 9106 Global Default (2 GiB equiv)</option>
+              <option value="WEAK">Legacy / Weak Hashing</option>
+            </select>
+          </div>
+
+          {isBelowStandard && (
+            <div className="bg-amber-900/20 border border-amber-900/50 rounded-md p-3 flex items-start gap-2 shadow-inner">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <span className="text-[11px] text-amber-400/90 leading-tight font-medium">
+                Below Industry Standard Baseline (Potential GPU Crack Vulnerability)
+              </span>
+            </div>
+          )}
+
           <div>
             <div className="flex justify-between items-center mb-1">
               <label className="text-xs font-semibold text-gray-400 uppercase">Memory Cost (Columns)</label>
@@ -76,7 +133,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <input 
               type="range" 
               name="memoryCost"
-              min="8" max="128" step="1"
+              min="2" max="128" step="1"
               value={config.memoryCost}
               onChange={handleInputChange}
               className="w-full accent-blue-500 cursor-pointer"
