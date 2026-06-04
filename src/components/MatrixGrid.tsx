@@ -1,5 +1,5 @@
 import React from 'react';
-import { MatrixCell } from '../types';
+import type { MatrixCell } from '../types';
 import { Cell } from './Cell';
 
 interface MatrixGridProps {

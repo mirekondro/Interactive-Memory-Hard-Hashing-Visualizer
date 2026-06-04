@@ -1,7 +1,7 @@
 import React from 'react';
 import { MatrixGrid } from './components/MatrixGrid';
-import { useHashingSimulation } from './hooks/useHashingSimulation';
-import { SimulationConfig } from './types';
+import { useArgonEngine } from './hooks/useArgonEngine';
+import type { SimulationConfig } from './types';
 
 const DEFAULT_CONFIG: SimulationConfig = {
   password: 'my_secure_password',
@@ -13,7 +13,7 @@ const DEFAULT_CONFIG: SimulationConfig = {
 };
 
 function App() {
-  const { grid, simState, start, pause, reset, step } = useHashingSimulation(DEFAULT_CONFIG);
+  const { grid, simState, play, pause, reset, step } = useArgonEngine(DEFAULT_CONFIG);
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans selection:bg-blue-500/30">
@@ -34,7 +34,7 @@ function App() {
           <div className="flex items-center gap-2 bg-gray-900 p-1.5 rounded-lg border border-gray-800">
             <button 
               className="px-5 py-2 bg-blue-600 hover:bg-blue-500 rounded-md font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
-              onClick={start}
+              onClick={play}
               disabled={simState.status === 'RUNNING'}
             >
               Start

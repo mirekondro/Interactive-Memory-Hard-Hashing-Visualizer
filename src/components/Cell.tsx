@@ -1,5 +1,6 @@
 import React from 'react';
-import { MatrixCell, CellState } from '../types';
+import { CellState } from '../types';
+import type { MatrixCell } from '../types';
 
 interface CellProps {
   cell: MatrixCell;
