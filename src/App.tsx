@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { VisualizerMatrix } from './components/VisualizerMatrix';
 import { Dashboard } from './components/Dashboard';
 import { CodeExporter } from './components/CodeExporter';

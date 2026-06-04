@@ -135,11 +135,11 @@ public class HashExample {
               <button
                 key={lang}
                 onClick={() => setActiveTab(lang)}
-                className={\`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap \${
+                className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap ${
                   activeTab === lang 
                     ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-inner' 
                     : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800 border border-transparent'
-                }\`}
+                }`}
               >
                 {lang}
               </button>
@@ -151,11 +151,11 @@ public class HashExample {
           <div className="absolute right-4 top-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={handleCopy}
-              className={\`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shadow-lg \${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shadow-lg ${
                 copied 
                   ? 'bg-emerald-500 text-white' 
                   : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600'
-              }\`}
+              }`}
             >
               {copied ? (
                 <>

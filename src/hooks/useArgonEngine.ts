@@ -6,8 +6,7 @@ import {
 } from '../types';
 import type {
   MatrixCell, 
-  SimulationConfig, 
-  SimulationState
+  SimulationConfig
 } from '../types';
 
 const createInitialState = (config: SimulationConfig) => {
@@ -105,7 +104,7 @@ export const useArgonEngine = (config: SimulationConfig) => {
       let nextLane = currentLane + 1;
       let nextCol = currentCol;
       let nextPass = currentPass;
-      let nextStatus = prevSim.status;
+      let nextStatus: SimulationStatus = prevSim.status;
 
       if (nextLane >= config.parallelism) {
         nextLane = 0;
