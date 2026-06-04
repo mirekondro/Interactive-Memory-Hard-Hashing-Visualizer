@@ -2,6 +2,7 @@ import React from 'react';
 import type { SimulationConfig, SimulationState } from '../types';
 import { SimulationStatus, ArgonMode } from '../types';
 import { CrackingSimulator } from './CrackingSimulator';
+import { ServerLoadSimulator } from './ServerLoadSimulator';
 
 interface DashboardProps {
   config: SimulationConfig;
@@ -273,6 +274,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       <CrackingSimulator config={config} />
+      <ServerLoadSimulator config={config} />
     </aside>
   );
 };
