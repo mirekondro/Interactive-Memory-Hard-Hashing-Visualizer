@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SimulationConfig, SimulationState } from '../types';
 import { SimulationStatus } from '../types';
+import { CrackingSimulator } from './CrackingSimulator';
 
 interface DashboardProps {
   config: SimulationConfig;
@@ -32,7 +33,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const isRunning = simState.status === SimulationStatus.RUNNING;
 
   return (
-    <aside className="w-full lg:w-80 flex-shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col h-full overflow-y-auto">
+    <aside className="w-full lg:w-[380px] flex-shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
       <div className="p-6 border-b border-gray-800">
         <h2 className="text-xl font-bold text-white tracking-wide">Controls</h2>
         <p className="text-xs text-gray-400 mt-1">Configure hashing parameters</p>
@@ -75,7 +76,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <input 
               type="range" 
               name="memoryCost"
-              min="8" max="64" step="1"
+              min="8" max="128" step="1"
               value={config.memoryCost}
               onChange={handleInputChange}
               className="w-full accent-blue-500 cursor-pointer"
@@ -124,7 +125,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               value={config.playbackSpeed}
               onChange={handleInputChange}
               className="w-full accent-yellow-500 cursor-pointer flex-row-reverse"
-              style={{ direction: 'rtl' }} // Make smaller value feel "faster" visually if we wanted, but let's keep normal
+              style={{ direction: 'rtl' }}
             />
           </div>
         </div>
@@ -164,7 +165,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* Real-time Status Readout */}
-      <div className="p-6 bg-gray-950 border-t border-gray-800 mt-auto">
+      <div className="p-6 bg-gray-950 border-t border-gray-800">
         <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">Live Status</h3>
         <div className="font-mono text-sm space-y-2">
           <div className="flex justify-between">
@@ -193,6 +194,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
       </div>
+
+      <CrackingSimulator config={config} />
     </aside>
   );
 };
