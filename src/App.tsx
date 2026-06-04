@@ -1,5 +1,5 @@
 import React from 'react';
-import { MatrixGrid } from './components/MatrixGrid';
+import { VisualizerMatrix } from './components/VisualizerMatrix';
 import { useArgonEngine } from './hooks/useArgonEngine';
 import type { SimulationConfig } from './types';
 
@@ -74,26 +74,26 @@ function App() {
         </section>
 
         {/* Grid Visualization */}
-        <section className="flex-1 w-full overflow-hidden flex flex-col items-center justify-center">
-          <MatrixGrid grid={grid} />
+        <section className="flex-1 w-full overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
+          <VisualizerMatrix grid={grid} simState={simState} />
         </section>
 
         {/* Legend */}
         <section className="mt-auto pt-6 border-t border-gray-800/50 text-sm text-gray-400 flex flex-wrap justify-center gap-8">
            <div className="flex items-center gap-3">
-             <div className="w-5 h-5 bg-gray-800 border border-gray-700 rounded-sm"></div> 
+             <div className="w-5 h-5 bg-[#1f2937] border border-[#374151] rounded-sm"></div> 
              <span className="font-medium">Uninitialized Memory</span>
            </div>
            <div className="flex items-center gap-3">
-             <div className="w-5 h-5 bg-yellow-400 rounded-sm shadow-[0_0_10px_rgba(250,204,21,0.3)]"></div> 
+             <div className="w-5 h-5 bg-[#f59e0b] rounded-sm shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div> 
              <span className="font-medium text-gray-300">Active Write</span>
            </div>
            <div className="flex items-center gap-3">
-             <div className="w-5 h-5 bg-blue-400 rounded-sm shadow-[0_0_10px_rgba(96,165,250,0.3)]"></div> 
-             <span className="font-medium text-gray-300">Active Read (Reference)</span>
+             <div className="w-5 h-5 bg-[#991b1b] rounded-sm shadow-[0_0_10px_rgba(220,38,38,0.5)] border border-[#ef4444]"></div> 
+             <span className="font-medium text-gray-300">Historical Read</span>
            </div>
            <div className="flex items-center gap-3">
-             <div className="w-5 h-5 bg-emerald-500 rounded-sm shadow-[0_0_10px_rgba(16,185,129,0.2)]"></div> 
+             <div className="w-5 h-5 bg-[#0d9488] rounded-sm shadow-[0_0_10px_rgba(20,184,166,0.2)]"></div> 
              <span className="font-medium">Computed Block</span>
            </div>
         </section>
