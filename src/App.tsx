@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { VisualizerMatrix } from './components/VisualizerMatrix';
 import { Dashboard } from './components/Dashboard';
+import { CodeExporter } from './components/CodeExporter';
 import { useArgonEngine } from './hooks/useArgonEngine';
 import { ArgonMode } from './types';
 import type { SimulationConfig } from './types';
@@ -46,8 +47,8 @@ function App() {
         />
 
         {/* Visualizer Canvas Area */}
-        <section className="flex-1 flex flex-col overflow-hidden relative bg-gray-950">
-          <div className="flex-1 p-6 overflow-hidden flex flex-col">
+        <section className="flex-1 flex flex-col overflow-y-auto relative bg-gray-950 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+          <div className="flex-1 p-6 flex flex-col min-h-[500px]">
             <VisualizerMatrix grid={grid} simState={simState} />
           </div>
 
@@ -70,6 +71,8 @@ function App() {
                <span className="font-medium">Computed Block</span>
              </div>
           </div>
+
+          <CodeExporter config={config} />
         </section>
       </main>
     </div>
