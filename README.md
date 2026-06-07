@@ -28,33 +28,10 @@ This tool aims to educate software engineers on these constraints by letting the
 * **Server Load Simulator:** See the backend consequences of your security choices. Increase "Concurrent Logins" to see when your chosen memory/time costs will trigger Out-Of-Memory (OOM) crashes or CPU thread starvation on a standard 8-Core/16GB production server.
 * **Code Exporter:** A dynamic tabbed interface that instantly translates your UI slider choices into production-ready, idiomatic code snippets for **Node.js, Python, Go, Rust,** and **Java**.
 
-## 🚀 Getting Started
+## 🌐 Live Demo
 
-This application is built with React, TypeScript, and Vite, utilizing an HTML5 Canvas for high-performance visual rendering.
-
-### Prerequisites
-* Node.js (v18+ recommended)
-* npm
-
-### Installation
-
-1. Clone the repository:
-   \`\`\`bash
-   git clone https://github.com/mirekondro/Interactive-Memory-Hard-Hashing-Visualizer.git
-   cd Interactive-Memory-Hard-Hashing-Visualizer
-   \`\`\`
-
-2. Install dependencies:
-   \`\`\`bash
-   npm install
-   \`\`\`
-
-3. Start the development server:
-   \`\`\`bash
-   npm run dev
-   \`\`\`
-
-4. Open your browser and navigate to \`http://localhost:5173\` (or the port specified in your terminal).
+You can interact with the visualizer directly in your browser:
+**[View the Live Application Here](https://your-domain.com)**
 
 ## 🛠 Tech Stack
 
